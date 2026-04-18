@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retirement Kart — Character Select</title>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mario-red: #E52521;
+    --peach-pink: #F096BE;
+    --star-gold: #FBD000;
+    --coin-yellow: #F5A623;
+    --bg-dark: #1a0a2e;
+    --bg-mid: #2d1b4e;
+    --track-gray: #3a2a5a;
+    --text-light: #f0e6ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-dark);
+    font-family: 'Fredoka', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: var(--text-light);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 80%, rgba(229,37,33,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(240,150,190,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(251,208,0,0.08) 0%, transparent 60%);
+    z-index: 0;
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-family: 'Bungee', cursive;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, var(--mario-red), var(--star-gold), var(--peach-pink));
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(251,208,0,0.3));
+  }
+
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .header .subtitle {
+    font-family: 'Bungee', cursive;
+    font-size: clamp(0.7rem, 2vw, 1rem);
+    color: rgba(240,230,255,0.5);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .context-bar {
+    text-align: center;
+    margin-top: 18px;
+    padding: 14px 20px;
+    background: linear-gradient(90deg, rgba(58,42,90,0.4), rgba(58,42,90,0.7), rgba(58,42,90,0.4));
+    border-radius: 12px;
+    border: 1px solid rgba(240,230,255,0.06);
+  }
+
+  .context-bar p {
+    font-size: 0.82rem;
+    color: rgba(240,230,255,0.55);
+    line-height: 1.6;
+  }
+
+  .context-bar .step-ref {
+    font-family: 'Bungee', cursive;
+    font-size: 0.72rem;
+    color: var(--coin-yellow);
+    letter-spacing: 1px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 28px;
+    margin-top: 28px;
+  }
+
+  .card {
+    background: linear-gradient(145deg, rgba(58,42,90,0.8), rgba(26,10,46,0.9));
+    border-radius: 20px;
+    padding: 0;
+    overflow: hidden;
+    border: 2px solid rgba(240,230,255,0.08);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, var(--accent), transparent, var(--accent));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.5),
+      0 0 40px var(--glow);
+  }
+
+  .card:hover .character-img {
+    transform: scale(1.1);
+    filter: drop-shadow(0 8px 24px var(--glow));
+  }
+
+  .card.ira { --accent: #E52521; --glow: rgba(229,37,33,0.3); --accent-light: #ff6b68; }
+  .card.hsa { --accent: #F096BE; --glow: rgba(240,150,190,0.3); --accent-light: #f7bdd5; }
+  .card.fourohone { --accent: #FBD000; --glow: rgba(251,208,0,0.3); --accent-light: #ffe44d; }
+
+  .card-top {
+    padding: 20px 28px 14px;
+    text-align: center;
+    position: relative;
+  }
+
+  .character-img-wrap {
+    width: 140px;
+    height: 120px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .character-img-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 12px;
+    background: radial-gradient(ellipse, var(--glow), transparent);
+    border-radius: 50%;
+    filter: blur(4px);
+  }
+
+  .character-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 16px var(--glow));
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), filter 0.4s ease;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .card:nth-child(2) .character-img { animation-delay: -1s; }
+  .card:nth-child(3) .character-img { animation-delay: -2s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1); }
+  }
+
+  .card:hover .character-img {
+    animation: none;
+    transform: scale(1.1);
+  }
+
+  .character-name {
+    font-family: 'Bungee', cursive;
+    font-size: 1.6rem;
+    color: var(--accent-light);
+    letter-spacing: 2px;
+    text-shadow: 0 2px 10px var(--glow);
+  }
+
+  .character-aka {
+    font-size: 0.8rem;
+    color: rgba(240,230,255,0.45);
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  .vehicle-tag {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(240,230,255,0.3);
+    background: rgba(240,230,255,0.05);
+    padding: 3px 12px;
+    border-radius: 10px;
+  }
+
+  .stats {
+    padding: 0 28px 10px;
+  }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    width: 90px;
+    flex-shrink: 0;
+    color: rgba(240,230,255,0.55);
+  }
+
+  .stat-track {
+    flex: 1;
+    height: 10px;
+    background: rgba(240,230,255,0.08);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .stat-fill {
+    height: 100%;
+    border-radius: 5px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    box-shadow: 0 0 10px var(--glow);
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .card.visible .stat-fill { width: var(--w); }
+
+  .card-desc {
+    padding: 16px 28px 12px;
+    border-top: 1px solid rgba(240,230,255,0.06);
+  }
+
+  .card-desc p {
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: rgba(240,230,255,0.7);
+  }
+
+  .card-desc .highlight {
+    color: var(--accent-light);
+    font-weight: 600;
+  }
+
+  .pros-cons {
+    padding: 0 28px 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .pc-col h4 {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+    color: rgba(240,230,255,0.35);
+  }
+
+  .pc-col p {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: rgba(240,230,255,0.55);
+  }
+
+  .special-wrap {
+    padding: 4px 28px 22px;
+  }
+
+  .special {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    background: rgba(240,230,255,0.06);
+    border: 1px solid var(--accent);
+    color: var(--accent-light);
+  }
+
+  .special::before {
+    content: '⭐ ';
+  }
+
+  .variant-section {
+    padding: 10px 28px 14px;
+    border-top: 1px solid rgba(240,230,255,0.04);
+  }
+
+  .variant-toggle {
+    display: flex;
+    gap: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(240,230,255,0.1);
+    margin-bottom: 8px;
+  }
+
+  .variant-btn {
+    flex: 1;
+    padding: 7px 10px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    background: rgba(240,230,255,0.04);
+    color: rgba(240,230,255,0.4);
+    transition: all 0.3s ease;
+  }
+
+  .variant-btn.active {
+    background: var(--accent);
+    color: #1a0a2e;
+  }
+
+  .variant-desc {
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: rgba(240,230,255,0.5);
+    min-height: 38px;
+    transition: opacity 0.3s ease;
+  }
+
+  .item-box {
+    text-align: center;
+    margin-top: 32px;
+    padding: 22px;
+    background: linear-gradient(145deg, rgba(58,42,90,0.5), rgba(26,10,46,0.5));
+    border-radius: 16px;
+    border: 1px solid rgba(240,230,255,0.06);
+  }
+
+  .item-box h3 {
+    font-family: 'Bungee', cursive;
+    font-size: 1rem;
+    color: var(--coin-yellow);
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+  }
+
+  .item-box p {
+    font-size: 0.85rem;
+    color: rgba(240,230,255,0.5);
+    line-height: 1.6;
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .order-list {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .order-step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: rgba(240,230,255,0.06);
+    color: rgba(240,230,255,0.6);
+  }
+
+  .order-step .num {
+    font-family: 'Bungee', cursive;
+    font-size: 0.85rem;
+    color: var(--coin-yellow);
+  }
+
+  .arrow {
+    color: rgba(240,230,255,0.2);
+    font-size: 1.1rem;
+  }
+
+  .compound-box {
+    margin-top: 20px;
+  }
+
+  .compound-visual {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 14px;
+    height: 130px;
+  }
+
+  .compound-bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .compound-bar {
+    width: 50px;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, var(--coin-yellow), #e8960a);
+    transition: height 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+  }
+
+  .compound-bar .amount {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Bungee', cursive;
+    font-size: 0.6rem;
+    color: var(--coin-yellow);
+    white-space: nowrap;
+  }
+
+  .compound-label {
+    font-size: 0.68rem;
+    color: rgba(240,230,255,0.4);
+    font-weight: 600;
+  }
+
+  .coin {
+    position: fixed;
+    font-size: 18px;
+    opacity: 0.15;
+    animation: coinFloat linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes coinFloat {
+    0% { transform: translateY(100vh) rotate(0deg); }
+    100% { transform: translateY(-20vh) rotate(720deg); }
+  }
+
+  .card.selected {
+    animation: selectFlash 0.6s ease;
+  }
+
+  @keyframes selectFlash {
+    0%, 100% { filter: brightness(1); }
+    30% { filter: brightness(1.6); }
+  }
+
+  @media (max-width: 500px) {
+    .grid { grid-template-columns: 1fr; gap: 20px; }
+    .card-top { padding: 18px 20px 10px; }
+    .stats { padding: 0 20px 8px; }
+    .card-desc { padding: 14px 20px 10px; }
+    .pros-cons { padding: 0 20px 6px; }
+    .variant-section { padding: 10px 20px 14px; }
+    .special-wrap { padding: 4px 20px 20px; }
+    .character-img-wrap { width: 120px; height: 100px; }
+    .compound-bar { width: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="coin" style="left:8%; animation-duration:14s; animation-delay:0s;">🪙</div>
+<div class="coin" style="left:25%; animation-duration:18s; animation-delay:3s;">🪙</div>
+<div class="coin" style="left:55%; animation-duration:16s; animation-delay:6s;">⭐</div>
+<div class="coin" style="left:78%; animation-duration:20s; animation-delay:2s;">🪙</div>
+<div class="coin" style="left:92%; animation-duration:15s; animation-delay:8s;">🍄</div>
+<div class="coin" style="left:40%; animation-duration:22s; animation-delay:5s;">🪙</div>
+
+<div class="container">
+  <div class="header">
+    <h1>Retirement Kart</h1>
+    <div class="subtitle">— Select Your Vehicle —</div>
+  </div>
+
+  <div class="context-bar">
+    <p class="step-ref">Steps 4 & 5 — Building the Engine / Full Speed Ahead</p>
+    <p>You've cleared high-interest debt, grabbed the employer match, and built your emergency fund. We're not picking stocks — we're buying a slice of the whole pie (index funds like the S&P 500 or target-date funds). The goal: <strong style="color: var(--coin-yellow);">15% of gross income</strong> across these three vehicles.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- IRA -->
+    <div class="card ira" onclick="this.classList.toggle('selected')">
+      <div class="card-top">
+        <div class="character-img-wrap">
+          <img class="character-img" src="https://www.pngmart.com/files/4/Super-Mario-Kart-PNG-Clipart.png" alt="Mario in kart">
+        </div>
+        <div class="character-name">IRA</div>
+        <div class="character-aka">The Mario — All-Arounder</div>
+        <div class="vehicle-tag">Standard Kart</div>
+      </div>
+      <div class="stats">
+        <div class="stat-row">
+          <span class="stat-label">Speed</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:65%"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Flexibility</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:90%"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Tax Shield</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:70%"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Limit</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:30%"></div></div>
+        </div>
+      </div>
+      <div class="card-desc">
+        <p>The <span class="highlight">reliable all-rounder</span> everyone picks first. Widest selection of funds — you choose your own course, unlike the employer-locked 401k menu. Not the flashiest contribution limit, but handles beautifully and rewards skilled drivers.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pc-col">
+          <h4>✅ Pros</h4>
+          <p>Widest fund selection. Full control over investments.</p>
+        </div>
+        <div class="pc-col">
+          <h4>⚠️ Cons</h4>
+          <p>More hands-on to manage. Lower contribution cap.</p>
+        </div>
+      </div>
+      <div class="variant-section">
+        <div class="variant-toggle">
+          <button class="variant-btn active" onclick="setVariant(this, 'roth-ira')">Roth</button>
+          <button class="variant-btn" onclick="setVariant(this, 'trad-ira')">Traditional</button>
+        </div>
+        <div class="variant-desc" id="roth-ira" style="display:block">⭐ Star at the finish line — pay taxes now, withdraw tax-free in retirement. Best if you expect a higher income later.</div>
+        <div class="variant-desc" id="trad-ira" style="display:none">🍄 Mushroom boost now — tax deduction today lowers your taxable income. Best if you're in a higher bracket now than you expect later.</div>
+      </div>
+      <div class="special-wrap">
+        <div class="special">Star Power: Roth Conversion Ladder</div>
+      </div>
+    </div>
+
+    <!-- HSA -->
+    <div class="card hsa" onclick="this.classList.toggle('selected')">
+      <div class="card-top">
+        <div class="character-img-wrap">
+          <img class="character-img" src="https://www.pngmart.com/files/4/Super-Mario-Kart-PNG-Picture.png" alt="Peach on bike">
+        </div>
+        <div class="character-name">HSA</div>
+        <div class="character-aka">The Peach — Secret Meta Pick</div>
+        <div class="vehicle-tag">Mach Bike</div>
+      </div>
+      <div class="stats">
+        <div class="stat-row">
+          <span class="stat-label">Speed</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:60%"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Flexibility</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:55%"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Tax Shield</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:100%"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Limit</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:30%"></div></div>
+        </div>
+      </div>
+      <div class="card-desc">
+        <p>The <span class="highlight">triple tax advantage</span> on a bike — nimble, elegant, and quietly the best vehicle in the game. Requires an HDHP to unlock — a trickier course best suited for riders without expensive recurring health costs (younger, no chronic conditions). But for those who qualify, this shortcut is unbeatable.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pc-col">
+          <h4>✅ Pros</h4>
+          <p>Only vehicle with three layers of tax shielding. Investable & grows.</p>
+        </div>
+        <div class="pc-col">
+          <h4>⚠️ Cons</h4>
+          <p>Requires HDHP. Best for younger/healthier riders.</p>
+        </div>
+      </div>
+      <div class="variant-section">
+        <div class="variant-toggle">
+          <button class="variant-btn active" onclick="setVariant(this, 'hsa-in')">Tax-Free In</button>
+          <button class="variant-btn" onclick="setVariant(this, 'hsa-grow')">Tax-Free Growth</button>
+          <button class="variant-btn" onclick="setVariant(this, 'hsa-out')">Tax-Free Out</button>
+        </div>
+        <div class="variant-desc" id="hsa-in" style="display:block">🪙 Contributions lower your taxable income today — instant coin block reward.</div>
+        <div class="variant-desc" id="hsa-grow" style="display:none">📈 Zero taxes on interest or investment gains — your coins compound in peace.</div>
+        <div class="variant-desc" id="hsa-out" style="display:none">💊 Withdraw tax-free for medical expenses — the finish line bonus no other vehicle gets. You never pay taxes on it.</div>
+      </div>
+      <div class="special-wrap">
+        <div class="special">Star Power: Triple Tax Exemption</div>
+      </div>
+    </div>
+
+    <!-- 401k/403b -->
+    <div class="card fourohone" onclick="this.classList.toggle('selected')">
+      <div class="card-top">
+        <div class="character-img-wrap">
+          <img class="character-img" src="https://www.pngmart.com/files/4/Super-Mario-Kart-PNG-Photos.png" alt="Bowser in kart">
+        </div>
+        <div class="character-name">401K</div>
+        <div class="character-aka">The Bowser — Heavy Hitter</div>
+        <div class="vehicle-tag">Flame Runner</div>
+      </div>
+      <div class="stats">
+        <div class="stat-row">
+          <span class="stat-label">Speed</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:50%"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Flexibility</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:30%"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Tax Shield</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:75%"></div></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Limit</span>
+          <div class="stat-track"><div class="stat-fill" style="--w:95%"></div></div>
+        </div>
+      </div>
+      <div class="card-desc">
+        <p>The <span class="highlight">heavyweight bruiser</span> with the biggest contribution limit on the track. Auto-deducted from your paycheck — set it and forget it. Handles like a tank (limited fund choices, employer-dependent), but raw power.</p>
+        <p style="margin-top:8px">The employer match is a <span class="highlight">free item box every lap</span>: you put in $1, boss puts in $1 — that's a 100% return before it even hits the market.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pc-col">
+          <h4>✅ Pros</h4>
+          <p>Highest limit. Auto-deducted. Employer match = free coins.</p>
+        </div>
+        <div class="pc-col">
+          <h4>⚠️ Cons</h4>
+          <p>Limited fund menu. Early withdrawal = tax penalty (set aside ~20-25%).</p>
+        </div>
+      </div>
+      <div class="variant-section">
+        <div class="variant-toggle">
+          <button class="variant-btn active" onclick="setVariant(this, 'roth-401')">Roth 401k</button>
+          <button class="variant-btn" onclick="setVariant(this, 'trad-401')">Traditional</button>
+        </div>
+        <div class="variant-desc" id="roth-401" style="display:block">⭐ Star power finish — tax-free withdrawals in retirement, with Bowser-sized contribution limits.</div>
+        <div class="variant-desc" id="trad-401" style="display:none">🍄 Mushroom boost now — reduces today's taxable income. Good if you're in a high bracket and expect to be lower later.</div>
+      </div>
+      <div class="special-wrap">
+        <div class="special">Star Power: Employer Match (Free Coins!)</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Racing Line -->
+  <div class="item-box">
+    <h3>🏁 The Optimal Racing Line</h3>
+    <p>Don't try to fill all three at once. Follow the order of operations — once one bucket overflows, the water flows to the next:</p>
+    <div class="order-list">
+      <div class="order-step"><span class="num">1</span> 401k to match</div>
+      <span class="arrow">→</span>
+      <div class="order-step"><span class="num">2</span> Fill HSA</div>
+      <span class="arrow">→</span>
+      <div class="order-step"><span class="num">3</span> Fill IRA</div>
+      <span class="arrow">→</span>
+      <div class="order-step"><span class="num">4</span> 401k to 15%</div>
+    </div>
+  </div>
+
+  <!-- Compounding -->
+  <div class="item-box compound-box">
+    <h3>🍄 The Cost of Waiting</h3>
+    <p>$100/month invested at ~10% avg. return. The best time to start was 10 years ago. The second best time is today.</p>
+    <div class="compound-visual" id="compoundVis">
+      <div class="compound-bar-group">
+        <div class="compound-bar" id="bar10" style="height:0px"><span class="amount">$20K</span></div>
+        <span class="compound-label">10 yrs</span>
+      </div>
+      <div class="compound-bar-group">
+        <div class="compound-bar" id="bar20" style="height:0px"><span class="amount">$76K</span></div>
+        <span class="compound-label">20 yrs</span>
+      </div>
+      <div class="compound-bar-group">
+        <div class="compound-bar" id="bar30" style="height:0px"><span class="amount">$226K</span></div>
+        <span class="compound-label">30 yrs</span>
+      </div>
+      <div class="compound-bar-group">
+        <div class="compound-bar" id="bar40" style="height:0px"><span class="amount">$637K</span></div>
+        <span class="compound-label">40 yrs</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function setVariant(btn, id) {
+    const section = btn.closest('.variant-section');
+    section.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    section.querySelectorAll('.variant-desc').forEach(d => d.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.card').forEach(c => observer.observe(c));
+
+  document.querySelectorAll('.card').forEach((card, i) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(40px)';
+    card.style.transition = `opacity 0.6s ease ${i * 0.15}s, transform 0.6s ease ${i * 0.15}s`;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      });
+    });
+  });
+
+  const compoundObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        setTimeout(() => { document.getElementById('bar10').style.height = '18px'; }, 200);
+        setTimeout(() => { document.getElementById('bar20').style.height = '42px'; }, 400);
+        setTimeout(() => { document.getElementById('bar30').style.height = '72px'; }, 600);
+        setTimeout(() => { document.getElementById('bar40').style.height = '110px'; }, 800);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  compoundObs.observe(document.getElementById('compoundVis'));
+</script>
+</body>
+</html>
